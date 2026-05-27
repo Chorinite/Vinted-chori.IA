@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vinted AI Analyzer</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0d1117;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #999;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      background: #0d1117;
+      color: white;
+      margin-top: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #00c896;
+      border: none;
+      border-radius: 8px;
+      color: black;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .status {
+      margin-top: 15px;
+      color: #aaa;
+    }
+
+    .results {
+      margin-top: 30px;
+    }
+
+    .item {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .item img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #222;
+    }
+
+    .item h3 {
+      margin-bottom: 6px;
+    }
+
+    .price {
+      color: #00c896;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .favs {
+      color: #ff7b72;
+      margin-top: 6px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .online {
+      color: #00c896;
+    }
+
+    .offline {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="topbar">
+    <div>
+      <h1>Vinted AI Analyzer</h1>
+      <div class="subtitle">Análisis real de Vinted con IA</div>
+    </div>
+
+    <div id="server-status" class="offline">
+      🔴 Offline
+    </div>
+  </div>
+
+  <div class="card">
+
+    <label>Búsqueda</label>
+    <input type="text" id="query" placeholder="Nike, Zara, Vintage..." />
+
+    <label style="margin-top:20px;display:block">Precio máximo</label>
+    <input type="number" id="maxPrice" value="100" />
+
+    <label style="margin-top:20px;display:block">Resultados</label>
+    <select id="count">
+      <option value="20">20</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+
+    <button onclick="runSearch()">
+      Ejecutar análisis
+    </button>
+
+    <div class="status" id="status">
+      Esperando búsqueda...
+    </div>
+
+  </div>
+
+  <div class="results" id="results"></div>
+
+</div>
+
+<script>
+
+const SCRAPER_URL = 'https://TUAPP.onrender.com';
+
+async function checkServer() {
+
+  try {
+
+    const r = await fetch(`${SCRAPER_URL}/health`);
+
+    const data = await r.json();
+
+    if(data.ok) {
+      document.getElementById('server-status').innerHTML = '🟢 Online';
+      document.getElementById('server-status').className = 'online';
+    }
+
+  } catch(err) {
+    document.getElementById('server-status').innerHTML = '🔴 Offline';
+    document.getElementById('server-status').className = 'offline';
+  }
+}
+
+checkServer();
+
+async function runSearch() {
+
+  const query = document.getElementById('query').value;
+  const maxPrice = document.getElementById('maxPrice').value;
+  const count = document.getElementById('count').value;
+
+  document.getElementById('status').innerHTML = 'Analizando Vinted...';
+
+  try {
+
+    const params = new URLSearchParams({
+      query,
+      maxPrice,
+      count
+    });
+
+    const r = await fetch(`${SCRAPER_URL}/scrape?${params}`);
+
+    const data = await r.json();
+
+    if(!data.ok) {
+      document.getElementById('status').innerHTML = 'Error: ' + data.error;
+      return;
+    }
+
+    document.getElementById('status').innerHTML = `${data.items.length} artículos encontrados`;
+
+    renderItems(data.items);
+
+  } catch(err) {
+
+    document.getElementById('status').innerHTML = err.message;
+
+  }
+}
+
+function renderItems(items) {
+
+  const results = document.getElementById('results');
+
+  results.innerHTML = '';
+
+  items.forEach(item => {
+
+    const div = document.createElement('div');
+
+    div.className = 'item';
+
+    div.innerHTML = `
+      <img src="${item.image || ''}" />
+
+      <div>
+        <h3>${item.title}</h3>
+
+        <div class="price">€${item.price}</div>
+
+        <div>${item.brand || 'Sin marca'}</div>
+
+        <div class="favs">❤️ ${item.favorites}</div>
+
+        <a href="${item.url}" target="_blank" style="color:#00c896">
+          Ver producto
+        </a>
+      </div>
+    `;
+
+    results.appendChild(div);
+
+  });
+}
+
+</script>
+
+</body>
+</html>
