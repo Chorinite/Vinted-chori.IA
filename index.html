@@ -1,271 +1,326 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vinted AI Analyzer</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    body {
-      background: #0d1117;
-      color: white;
-      font-family: Arial, sans-serif;
-      padding: 30px;
-    }
+<title>Vinted AI Analyzer</title>
 
-    .container {
-      max-width: 1000px;
-      margin: auto;
-    }
+<style>
 
-    h1 {
-      font-size: 40px;
-      margin-bottom: 10px;
-    }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
 
-    .subtitle {
-      color: #999;
-      margin-bottom: 30px;
-    }
+body{
+background:#0d1117;
+font-family:Arial;
+color:white;
+padding:30px;
+}
 
-    .card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
+.container{
+max-width:1000px;
+margin:auto;
+}
 
-    input, select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #30363d;
-      background: #0d1117;
-      color: white;
-      margin-top: 10px;
-    }
+h1{
+font-size:42px;
+margin-bottom:10px;
+}
 
-    button {
-      width: 100%;
-      padding: 14px;
-      background: #00c896;
-      border: none;
-      border-radius: 8px;
-      color: black;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 20px;
-    }
+.subtitle{
+color:#888;
+margin-bottom:30px;
+}
 
-    button:hover {
-      opacity: 0.9;
-    }
+.card{
+background:#161b22;
+border:1px solid #30363d;
+padding:20px;
+border-radius:14px;
+margin-bottom:20px;
+}
 
-    .status {
-      margin-top: 15px;
-      color: #aaa;
-    }
+input,select{
+width:100%;
+padding:14px;
+margin-top:10px;
+background:#0d1117;
+border:1px solid #30363d;
+border-radius:10px;
+color:white;
+}
 
-    .results {
-      margin-top: 30px;
-    }
+button{
+width:100%;
+padding:15px;
+margin-top:20px;
+background:#00c896;
+border:none;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+font-size:16px;
+}
 
-    .item {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 15px;
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
+button:hover{
+opacity:.9;
+}
 
-    .item img {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 10px;
-      background: #222;
-    }
+#status{
+margin-top:15px;
+color:#aaa;
+}
 
-    .item h3 {
-      margin-bottom: 6px;
-    }
+.results{
+margin-top:30px;
+}
 
-    .price {
-      color: #00c896;
-      font-size: 20px;
-      font-weight: bold;
-    }
+.item{
+display:flex;
+gap:15px;
+background:#161b22;
+border:1px solid #30363d;
+padding:15px;
+border-radius:14px;
+margin-bottom:15px;
+}
 
-    .favs {
-      color: #ff7b72;
-      margin-top: 6px;
-    }
+.item img{
+width:120px;
+height:120px;
+object-fit:cover;
+border-radius:12px;
+background:#222;
+}
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
+.price{
+font-size:22px;
+color:#00c896;
+font-weight:bold;
+margin-top:6px;
+}
 
-    .online {
-      color: #00c896;
-    }
+.favs{
+margin-top:8px;
+color:#ff7b72;
+}
 
-    .offline {
-      color: red;
-    }
-  </style>
+.online{
+color:#00c896;
+}
+
+.offline{
+color:red;
+}
+
+</style>
+
 </head>
+
 <body>
 
 <div class="container">
 
-  <div class="topbar">
-    <div>
-      <h1>Vinted AI Analyzer</h1>
-      <div class="subtitle">Análisis real de Vinted con IA</div>
-    </div>
+<h1>Vinted AI Analyzer</h1>
 
-    <div id="server-status" class="offline">
-      🔴 Offline
-    </div>
-  </div>
+<div class="subtitle">
+Análisis real de Vinted
+</div>
 
-  <div class="card">
+<div id="server-status" class="offline">
+🔴 Offline
+</div>
 
-    <label>Búsqueda</label>
-    <input type="text" id="query" placeholder="Nike, Zara, Vintage..." />
+<div class="card">
 
-    <label style="margin-top:20px;display:block">Precio máximo</label>
-    <input type="number" id="maxPrice" value="100" />
+<label>Búsqueda</label>
 
-    <label style="margin-top:20px;display:block">Resultados</label>
-    <select id="count">
-      <option value="20">20</option>
-      <option value="50">50</option>
-      <option value="100">100</option>
-    </select>
+<input
+type="text"
+id="query"
+placeholder="Nike, Zara, Vintage..."
+>
 
-    <button onclick="runSearch()">
-      Ejecutar análisis
-    </button>
+<label style="display:block;margin-top:20px">
+Precio máximo
+</label>
 
-    <div class="status" id="status">
-      Esperando búsqueda...
-    </div>
+<input
+type="number"
+id="maxPrice"
+value="100"
+>
 
-  </div>
+<label style="display:block;margin-top:20px">
+Resultados
+</label>
 
-  <div class="results" id="results"></div>
+<select id="count">
+<option value="20">20</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+
+<button onclick="runSearch()">
+Ejecutar análisis
+</button>
+
+<div id="status">
+Esperando búsqueda...
+</div>
+
+</div>
+
+<div class="results" id="results"></div>
 
 </div>
 
 <script>
 
-const SCRAPER_URL = 'https://TUAPP.onrender.com';
+const SCRAPER_URL =
+'https://vinted-chori-ia.onrender.com';
 
-async function checkServer() {
+async function checkServer(){
 
-  try {
+try{
 
-    const r = await fetch(`${SCRAPER_URL}/health`);
+const r =
+await fetch(`${SCRAPER_URL}/health`);
 
-    const data = await r.json();
+const data = await r.json();
 
-    if(data.ok) {
-      document.getElementById('server-status').innerHTML = '🟢 Online';
-      document.getElementById('server-status').className = 'online';
-    }
+if(data.ok){
 
-  } catch(err) {
-    document.getElementById('server-status').innerHTML = '🔴 Offline';
-    document.getElementById('server-status').className = 'offline';
-  }
+document.getElementById('server-status')
+.innerHTML='🟢 Online';
+
+document.getElementById('server-status')
+.className='online';
+
+}
+
+}catch(err){
+
+document.getElementById('server-status')
+.innerHTML='🔴 Offline';
+
+document.getElementById('server-status')
+.className='offline';
+
+}
+
 }
 
 checkServer();
 
-async function runSearch() {
+async function runSearch(){
 
-  const query = document.getElementById('query').value;
-  const maxPrice = document.getElementById('maxPrice').value;
-  const count = document.getElementById('count').value;
+const query =
+document.getElementById('query').value;
 
-  document.getElementById('status').innerHTML = 'Analizando Vinted...';
+const maxPrice =
+document.getElementById('maxPrice').value;
 
-  try {
+const count =
+document.getElementById('count').value;
 
-    const params = new URLSearchParams({
-      query,
-      maxPrice,
-      count
-    });
+document.getElementById('status')
+.innerHTML='Analizando Vinted...';
 
-    const r = await fetch(`${SCRAPER_URL}/scrape?${params}`);
+try{
 
-    const data = await r.json();
+const params = new URLSearchParams({
+query,
+maxPrice,
+count
+});
 
-    if(!data.ok) {
-      document.getElementById('status').innerHTML = 'Error: ' + data.error;
-      return;
-    }
+const r =
+await fetch(
+`${SCRAPER_URL}/scrape?${params}`
+);
 
-    document.getElementById('status').innerHTML = `${data.items.length} artículos encontrados`;
+const data = await r.json();
 
-    renderItems(data.items);
+if(!data.ok){
 
-  } catch(err) {
+document.getElementById('status')
+.innerHTML='Error: '+data.error;
 
-    document.getElementById('status').innerHTML = err.message;
+return;
 
-  }
 }
 
-function renderItems(items) {
+document.getElementById('status')
+.innerHTML=
+`${data.items.length} artículos encontrados`;
 
-  const results = document.getElementById('results');
+renderItems(data.items);
 
-  results.innerHTML = '';
+}catch(err){
 
-  items.forEach(item => {
+document.getElementById('status')
+.innerHTML=err.message;
 
-    const div = document.createElement('div');
+}
 
-    div.className = 'item';
+}
 
-    div.innerHTML = `
-      <img src="${item.image || ''}" />
+function renderItems(items){
 
-      <div>
-        <h3>${item.title}</h3>
+const results =
+document.getElementById('results');
 
-        <div class="price">€${item.price}</div>
+results.innerHTML='';
 
-        <div>${item.brand || 'Sin marca'}</div>
+items.forEach(item=>{
 
-        <div class="favs">❤️ ${item.favorites}</div>
+const div =
+document.createElement('div');
 
-        <a href="${item.url}" target="_blank" style="color:#00c896">
-          Ver producto
-        </a>
-      </div>
-    `;
+div.className='item';
 
-    results.appendChild(div);
+div.innerHTML=`
 
-  });
+<img src="${item.image}" />
+
+<div>
+
+<h3>${item.title}</h3>
+
+<div class="price">
+€${item.price}
+</div>
+
+<div>
+${item.brand}
+</div>
+
+<div class="favs">
+❤️ ${item.favorites}
+</div>
+
+<a
+href="${item.url}"
+target="_blank"
+style="color:#00c896"
+>
+Ver producto
+</a>
+
+</div>
+
+`;
+
+results.appendChild(div);
+
+});
+
 }
 
 </script>
